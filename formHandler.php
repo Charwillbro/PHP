@@ -34,7 +34,7 @@
 <p>This page displays the results of the Server side processing. </p>
 <p>The PHP page has been formatted to use the Model-View-Controller (MVC) concepts. </p>
 <h3>Display the values from the form using Method 1. Uses a loop to process through the $_POST array</h3>
-<p>
+
 	<table border='a'>
     <tr>
     	<th>Field Name</th>
@@ -42,7 +42,7 @@
     </tr>
 	<?php echo $tableBody;  ?>
 	</table>
-</p>
+
 <h3>Display the values from the form using Method 2. Displays the individual values.</h3>
 <p>School: <?php echo $inSchool; ?></p>
 <p>First Name: <?php echo $inFirstName; ?></p>
