@@ -8,7 +8,7 @@
 
 function validateProdName($inName){
     //name field cannot be empty
-    if(empty($inName) ){
+    if(empty($inName) ){ //checks if the name variable is empty
         return false; //fails validation
     }else{
         return true; //passes validation
