@@ -1,9 +1,9 @@
 <?php
 
-function validateProdName( $inName ) {
+function validateProdValue( $inValue ) {
 	//cannot be empty
 	
-	if( empty($inName) ) {
+	if( empty($inValue) ) {
 		return false;	//Failed validation
 	}
 	else {
@@ -29,9 +29,9 @@ function validateProdPrice( $inPrice) {
 	}		
 }//end validatePrice
 
-function validateProdColor( $inColor) {
+function validateProdDenomination( $inDenomination) {
 	//must select a color
-	if( empty($inColor) ) {
+	if( empty($inDenomination) ) {
 		return false;
 	}
 	else {

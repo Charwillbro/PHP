@@ -159,6 +159,11 @@
             <span id="errorPrice"><?php echo $price_errMsg; ?></span>
           </p>
           <p>Product Color: <span id="errorColor"><?php echo $color_errMsg; ?></span></p>
+            <div style="display:none;"> <?php //this field checks for bots it will be hidden from real people
+                ?>
+                <label>Are You a Cat?</label>
+                <input type="text" name="meow" id="meow" />
+            </div>
           <p>
             <input type="radio" name="prod_color" id="prod_red" value="prod_red"
             	<?php if($prod_color == "prod_red"){ echo "checked"; } ?>>
