@@ -5,6 +5,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>WDV341 Intro PHP - Form Validation Example</title>
     <?php
+
+    //include "connection.php";
     //Setup the variables used by the page
     $nameErrMsg = "";
     $sSNErrMsg = "";
@@ -15,6 +17,7 @@
     $inName = "";
     $inSSN = "";
     $responseRadio = "";
+    $message = "";
 
 
     function validateName()
@@ -89,10 +92,58 @@
         }
         //echo "<script type='text/javascript'>alert('$validForm');</script>";
 
-//        if($validForm) {
-//            //Form is good, send to database
-//
-//        }
+        if($validForm) {
+            //Form is good, send to database
+            $message ="Filled out form is returned to the user as per instructions";
+//Form is good
+
+            include "connection.php";
+
+//            //process form data
+//            $inName = $_POST['inName'];
+//            $inSSN = $_POST['sSN'];
+//            $responseRadio = $_POST['RadioGroup1'];
+
+
+            $inName = $_POST['inName'];
+            $inSSN = $_POST['sSN'];
+            $responseRadio = $_POST['RadioGroup1'];
+
+            //prepared statements
+            // below are prepared statements.
+
+            $sql = "INSERT INTO cust_registration (";
+            $sql .= "name, ";
+            $sql .= "sSN, ";
+            $sql .= "response ";
+
+
+            // below are prepared statement placeholders
+            $sql .= ") VALUES (";
+            $sql .= ":Name, ";
+            $sql .= ":SSN, ";
+            $sql .= ":response ";
+            $sql .= ")";
+
+
+            try{
+                $stmt = $conn->prepare($sql); //always prepare the statement
+
+                $stmt ->bindParam(":Name", $inName); //bind the variables
+                $stmt ->bindParam(":SSN",$inSSN);
+                $stmt ->bindParam(":response",$responseRadio);
+
+                $stmt ->execute(); // finally, execute the statement
+                echo "<h1>Your record has been successfully added to the database.</h1>";
+            }
+            catch(PDOException $e){
+
+                echo "<h1>There has been a problem</h1>";
+                //die();
+
+            }
+
+        }
         //else display the form with original values and error messages
 
     }
@@ -119,7 +170,7 @@ if ($validForm) {
     <h1>Form Was Successful</h1>
     <h2>Thank you for submitting your information</h2>
     <?php
-} else {
+} //else { //uncomment to hide the form from the user
     ?>
     <h1>WDV341 Intro PHP</h1>
     <h2>Form Validation Assignment
@@ -127,9 +178,12 @@ if ($validForm) {
 
     </h2>
     <div id="orderArea">
-        <h1><?php echo $validForm; ?></h1>
-        <form id="form1" name="form1" method="post" action="formValidationAssignment.php">
-
+        <h1><?php echo $message; ?></h1>
+        <form id="form1" name="form1" method="post" action="formValidationAssignment.php" onsubmit="validateMyForm()">
+            <div style="display:none;">
+                <label>Keep this field blank</label>
+                <input type="text" name="honeypot" id="honeypot" />
+            </div>
             <h3>Customer Registration Form</h3>
             <table width="587" border="0">
                 <tr>
@@ -176,9 +230,22 @@ if ($validForm) {
                 <input type="reset" name="button2" id="button2" value="Clear Form"/>
             </p>
         </form>
+        <script type="text/javascript">
+            function validateMyForm() {
+                // The field is empty, submit the form.
+                if(!document.getElementById("honeypot").value) {
+                    return true;
+                }
+                // the field has a value it's a spam bot
+                else {
+                    return false;
+                }
+            }
+        </script>
+
     </div>
     <?php
-}    //end valid form confirmation
+//}    //end valid form confirmation
 ?>
 </body>
 </html>
