@@ -1,0 +1,186 @@
+@import url('https://fonts.googleapis.com/css?family=Raleway|Righteous|Sedgwick+Ave');
+
+* {
+    box-sizing: border-box;
+}
+
+/* Style the body */
+body {
+    font-family: 'Righteous', cursive;
+    margin: 0;
+    background-image: url("images/coinsBackground1.jpg");
+    background-color: #abbee2; /* Used if the image is unavailable */
+    height: 700px; /* You must set a specified height */
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Do not repeat the image */
+    background-attachment: fixed;
+    background-size: cover; /* Resize the background image to cover the entire container */
+
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.content {
+
+    margin-top: 25px;
+    background-color: rgba(40, 13, 15, 0.71);
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 1200px;
+    padding-bottom: 25px;
+    padding-top: 25px;
+    padding-left: 25px;
+    padding-right: 25px;
+}
+
+/* Header/logo Title */
+.header {
+    font-family: 'Sedgwick Ave', cursive;
+    padding: 60px;
+    text-align: center;
+    background-image: url("images/banner.jpg");
+    background-color: #452829;
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Do not repeat the image */
+    background-size: cover;
+    color: #ff9100;
+}
+
+.header > p, h1 {
+    background-color: rgba(0, 0, 0, 0.4);
+    padding: 2px;
+}
+
+/* Column container */
+.row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+/* Create two unequal columns that sits next to each other */
+/* Sidebar/left column */
+.side {
+    flex: 30%;
+    background-color: rgba(36, 73, 146, 0.7);
+    padding: 10px;
+    color: #ab8107;
+}
+
+/* Main column */
+.main {
+    flex: 70%;
+
+    background-color: rgba(171, 190, 226, 0.7);
+    padding: 10px;
+    text-align: center;
+}
+
+img {
+    margin: 10px;
+    padding: 8px;
+    background-color: rgba(30, 42, 54, 0.82);
+}
+
+article {
+    padding: 10px;
+    background-color: rgba(188, 188, 190, 0.74);
+    color: #485167;
+    width: 80%;
+    box-sizing: border-box;
+    margin-top: 15px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 4px;
+}
+
+article > img {
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+    flex-direction: column;
+    max-height: 200px;
+    max-width: 300px;
+    background-color: #1e2a36;
+    padding: 5px;
+}
+
+/* Sidebar Image */
+.sidebarImage img {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    max-height: 200px;
+    max-width: 300px;
+}
+
+/* Footer */
+.footer {
+    padding: 10px;
+    text-align: center;
+    background: #280d0f;
+    color: rgba(217, 202, 41, 0.71);
+    display: flex;
+    font-family: Raleway;
+
+}
+
+.footer img {
+    background-color: transparent;
+    margin: 0px;
+    padding: 0px;
+}
+
+.a, .b, .c {
+    flex: 1;
+    text-align: center;
+
+}
+
+/* End of Footer Styling*/
+
+/* Style the top navigation bar */
+.navbar {
+    display: flex;
+    background-color: #333;
+
+}
+
+/* Style the navigation bar links */
+.navbar a {
+    color: #b72f38;
+    padding: 14px 20px;
+    text-decoration: none;
+    text-align: center;
+    flex: auto; /*auto adjusts the width of the navbar buttons.*/
+}
+
+/* Change color on hover */
+.navbar a:hover {
+    background-color: #d6323b;
+    color: #280d0f;
+}
+
+.navbar .active {
+    background-color: #d6323b;
+    color: #280d0f
+}
+
+/* Responsive layout - when the screen is less than 700px wide, make the two columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 700px) {
+    .row, .navbar {
+        flex-direction: column;
+    }
+}
+@media screen and (max-width: 1300px) {
+    .content {
+       margin-left: 5%;
+        margin-right: 5%;
+    }
+}
