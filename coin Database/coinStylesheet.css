@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Raleway|Righteous|Sedgwick+Ave');
+@import url('https://fonts.googleapis.com/css?family=Encode+Sans+Condensed:600|Raleway:600');
 
 * {
     box-sizing: border-box;
@@ -6,10 +6,10 @@
 
 /* Style the body */
 body {
-    font-family: 'Righteous', cursive;
+    font-family: 'Raleway', sans-serif;
     margin: 0;
-    background-image: url("images/coinsBackground1.jpg");
-    background-color: #abbee2; /* Used if the image is unavailable */
+    background-image: url("images/coincover2.jpg");
+    background-color: #020051; /* Used if the image is unavailable */
     height: 700px; /* You must set a specified height */
     background-position: center; /* Center the image */
     background-repeat: no-repeat; /* Do not repeat the image */
@@ -29,10 +29,10 @@ a:hover {
 .content {
 
     margin-top: 25px;
-    background-color: rgba(40, 13, 15, 0.71);
+    background-color: rgba(40, 13, 15, 0);
     margin-left: auto;
     margin-right: auto;
-    max-width: 1200px;
+    max-width: 1100px;
     padding-bottom: 25px;
     padding-top: 25px;
     padding-left: 25px;
@@ -41,7 +41,7 @@ a:hover {
 
 /* Header/logo Title */
 .header {
-    font-family: 'Sedgwick Ave', cursive;
+    font-family: 'Encode Sans Condensed', sans-serif;
     padding: 60px;
     text-align: center;
     background-image: url("images/banner.jpg");
@@ -76,9 +76,13 @@ a:hover {
 .main {
     flex: 70%;
 
-    background-color: rgba(171, 190, 226, 0.7);
+    background-color: rgba(171, 190, 226, 0.45);
     padding: 10px;
     text-align: center;
+}
+
+#whyUs {
+    text-align: left;
 }
 
 img {
@@ -127,7 +131,7 @@ article > img {
     background: #280d0f;
     color: rgba(217, 202, 41, 0.71);
     display: flex;
-    font-family: Raleway;
+    font-family: 'Raleway', sans-serif;
 
 }
 
@@ -148,13 +152,13 @@ article > img {
 /* Style the top navigation bar */
 .navbar {
     display: flex;
-    background-color: #333;
+    background-color: rgba(1, 44, 0, 0.61);
 
 }
 
 /* Style the navigation bar links */
 .navbar a {
-    color: #b72f38;
+    color: rgb(55, 255, 0);
     padding: 14px 20px;
     text-decoration: none;
     text-align: center;
@@ -163,13 +167,13 @@ article > img {
 
 /* Change color on hover */
 .navbar a:hover {
-    background-color: #d6323b;
-    color: #280d0f;
+    background-color: rgba(1, 44, 0, 0.6);
+    color: rgba(1, 115, 0, 0.65);
 }
 
 .navbar .active {
-    background-color: #d6323b;
-    color: #280d0f
+    background-color: rgba(13, 35, 0, 0.6);
+    color: rgba(1, 115, 0, 0.65)
 }
 
 /* Responsive layout - when the screen is less than 700px wide, make the two columns stack on top of each other instead of next to each other */
@@ -178,9 +182,10 @@ article > img {
         flex-direction: column;
     }
 }
+
 @media screen and (max-width: 1300px) {
     .content {
-       margin-left: 5%;
+        margin-left: 5%;
         margin-right: 5%;
     }
 }

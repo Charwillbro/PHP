@@ -1,18 +1,37 @@
 <?php
 session_start();
+include "connection.php";
+if (isset($_GET['cur_id'])) {
+    $updateRecID = $_GET['cur_id'];    //Record Id to be updated
+    $_SESSION['updateID'] = $_GET['cur_id'];
+} else {
+    $updateRecID = $_SESSION['updateID'];
+}
+//echo $updateRecID;
 
-$cur_faceValue = "";    //define variable
-$cur_year = "";
-$cur_denomination = "";
-$cur_mint = "";
-$cur_comments = "";
-$cur_retailValue = "";
-$cur_condition = "";
-$cur_isPrivate = "";
-$cur_inFile = " ";
-$cur_inFileBack = " ";
-$user_id = "";
-$user_username = "";
+try {
+    $stmt = $conn->prepare("SELECT * FROM currency_database WHERE cur_id ='$updateRecID'");
+
+    $stmt->execute();
+} catch (PDOException $e) {
+    //echo $e;
+    // echo "<h1> There has been an Error. Please Try Again </h1>";
+}
+
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+$cur_faceValue = $row['cur_facevalue'];    //define variable
+$cur_year = $row['cur_year'];
+$cur_denomination = $row['cur_denomination'];
+$cur_mint = $row['cur_mint'];
+$cur_comments = $row['cur_comments'];
+$cur_retailValue = $row['cur_retailvalue'];
+$cur_condition = $row['cur_condition'];
+$cur_isPrivate = '';
+$cur_inFile = $row['cur_imagefront'];
+$cur_inFileBack = $row['cur_imagefront'];
+$user_id = $row['cur_ownerid'];
+$user_username = $row['cur_username'];
+
 
 $faceValue_errMsg = "";    //define variable
 $year_errMsg = "";
@@ -31,6 +50,7 @@ $valid_form = false;
 //
 // FINISH VALIDATION
 // STYLE PAGE
+
 
 if (isset($_POST['cur_submit'])) {
     //process form data
@@ -52,68 +72,78 @@ if (isset($_POST['cur_submit'])) {
 
     $valid_form = true;        //set validation flag assume all fields are valid
 
-    $target_dir = "images/";
-    $target_file = $target_dir . basename($_FILES["cur_inFile"]["name"]); //concatenate the target directory with the filename
-    $uploadOk = 1;
-    $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-
-    // Check if image file is a actual image or fake image
-    $check = getimagesize($_FILES["cur_inFile"]["tmp_name"]);
-    if ($check !== false) {
-        // echo "File is an image - " . $check["mime"] . ".";
-        // echo $target_file;
+    if ($_FILES['cur_inFile']['size'] != 0) { //if the image file value has not changes from what was returned from the database, do not change it else use new photo
+        //  echo("image is empty");
+        $target_dir = "images/";
+        $target_file = $target_dir . basename($_FILES["cur_inFile"]["name"]); //concatenate the target directory with the filename
         $uploadOk = 1;
-    } else {
-        //echo "File is not an image. Please try again.";
-        $uploadOk = 0;
-    }
+        $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
-    if ($uploadOk == 0) {
-        //echo "Sorry, your file was not uploaded.";
-        $inFile_errMsg = "Sorry, there was an error uploading your file.";
-        $valid_form = false;
-        // if everything is ok, try to upload file
-    } else {
-        if (move_uploaded_file($_FILES["cur_inFile"]["tmp_name"], $target_file)) { //actually moves the file
-            // echo "The file " . basename($_FILES["cur_inFile"]["name"]) . " has been uploaded.";
+        // Check if image file is a actual image or fake image
+        $check = getimagesize($_FILES["cur_inFile"]["tmp_name"]);
+        if ($check !== false) {
+            //     echo "File is an image - " . $check["mime"] . ".";
+            //     echo $target_file;
+            $uploadOk = 1;
         } else {
-            // echo "Sorry, there was an error uploading your file.";
-            $inFile_errMsg = "Sorry, there was an error uploading your file.";
-
-            $valid_form = false;
+            //  echo "File is not an image. Please try again.";
+            $uploadOk = 0;
         }
+
+        if ($uploadOk == 0) {
+            //echo "Sorry, your file was not uploaded.";
+            $inFile_errMsg = "Sorry, there was an error uploading your file.";
+            $valid_form = false;
+            // if everything is ok, try to upload file
+        } else {
+            if (move_uploaded_file($_FILES["cur_inFile"]["tmp_name"], $target_file)) { //actually moves the file
+                //     echo "The file " . basename($_FILES["cur_inFile"]["name"]) . " has been uploaded.";
+            } else {
+                // echo "Sorry, there was an error uploading your file.";
+                $inFile_errMsg = "Sorry, there was an error uploading your file.";
+
+                $valid_form = false;
+            }
+        }
+    } else {
+        $target_file = $row['cur_imagefront'];
+        // echo $target_file;
     }
 
 //    image 2 'back of coin'
-    $target_fileBack = $target_dir . basename($_FILES["cur_inFileBack"]["name"]); //concatenate the target directory with the filename
-    $uploadOk = 1;
-    $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-
-    // Check if image file is a actual image or fake image
-    $check = getimagesize($_FILES["cur_inFileBack"]["tmp_name"]);
-    if ($check !== false) {
-        //  echo "File is an image - " . $check["mime"] . ".";
-        // echo $target_file;
+    if ($_FILES['cur_inFileBack']['size'] != 0) {
+        $target_fileBack = $target_dir . basename($_FILES["cur_inFileBack"]["name"]); //concatenate the target directory with the filename
         $uploadOk = 1;
-    } else {
-        echo "File is not an image. Please try again.";
-        $uploadOk = 0;
-    }
+        $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
-    if ($uploadOk == 0) {
-        //echo "Sorry, your file was not uploaded.";
-        $inFileBack_errMsg = "Sorry, there was an error uploading your file.";
-        $valid_form = false;
-        // if everything is ok, try to upload file
-    } else {
-        if (move_uploaded_file($_FILES["cur_inFileBack"]["tmp_name"], $target_fileBack)) { //actually moves the file
-            // echo "The file " . basename($_FILES["cur_inFileBack"]["name"]) . " has been uploaded.";
+        // Check if image file is a actual image or fake image
+        $check = getimagesize($_FILES["cur_inFileBack"]["tmp_name"]);
+        if ($check !== false) {
+            //echo "File is an image - " . $check["mime"] . ".";
+            //  echo $target_file;
+            $uploadOk = 1;
         } else {
-            // echo "Sorry, there was an error uploading your file.";
-            $inFileBack_errMsg = "Sorry, there was an error uploading your file.";
-
-            $valid_form = false;
+            //   echo "File is not an image. Please try again.";
+            $uploadOk = 0;
         }
+
+        if ($uploadOk == 0) {
+            //echo "Sorry, your file was not uploaded.";
+            $inFileBack_errMsg = "Sorry, there was an error uploading your file.";
+            $valid_form = false;
+            // if everything is ok, try to upload file
+        } else {
+            if (move_uploaded_file($_FILES["cur_inFileBack"]["tmp_name"], $target_fileBack)) { //actually moves the file
+                //  echo "The file " . basename($_FILES["cur_inFileBack"]["name"]) . " has been uploaded.";
+            } else {
+                // echo "Sorry, there was an error uploading your file.";
+                $inFileBack_errMsg = "Sorry, there was an error uploading your file.";
+
+                $valid_form = false;
+            }
+        }
+    } else {
+        $target_fileBack = $row['cur_imageback'];
     }
     if (!validateCurValue($cur_faceValue)) {
         $valid_form = false;
@@ -136,67 +166,34 @@ if (isset($_POST['cur_submit'])) {
     if ($valid_form) {
 //Form is good
 
-        include "connection.php";
-
 
 //prepared statements
-        $sql = "INSERT INTO currency_database (";
-        $sql .= "cur_denomination, ";
-        $sql .= "cur_facevalue, ";
-        $sql .= "cur_mint, ";
-        $sql .= "cur_year, ";
-        $sql .= "cur_condition, ";
-        $sql .= "cur_comments, ";
-        $sql .= "cur_isprivate, ";
-        $sql .= "cur_imagefront, ";
-        $sql .= "cur_imageback, ";
-        $sql .= "cur_retailvalue, ";
-        $sql .= "cur_ownerid, ";
-        $sql .= "cur_username ";
+        $sql = "UPDATE currency_database SET ";
+        $sql .= "cur_denomination='$cur_denomination', ";
+        $sql .= "cur_facevalue='$cur_faceValue', ";
+        $sql .= "cur_mint='$cur_mint', ";
+        $sql .= "cur_year='$cur_year', ";
+        $sql .= "cur_condition='$cur_condition', ";
+        $sql .= "cur_comments='$cur_comments', ";
+        //$sql .= "cur_isprivate='$cur_isPrivate', ";
+        $sql .= "cur_imagefront='$target_file', ";
+        $sql .= "cur_imageback='$target_fileBack', ";
+        $sql .= "cur_retailvalue='$cur_retailValue', ";
+        $sql .= "cur_ownerid='$user_id', ";
+        $sql .= "cur_username='$user_username' ";
+        $sql .= "WHERE cur_id='$updateRecID'";
 
-
-// below are prepared statement placeholders
-        $sql .= ") VALUES (";
-        $sql .= ":curDenomination, ";
-        $sql .= ":curFaceValue, ";
-        $sql .= ":curMint, ";
-        $sql .= ":curYear, ";
-        $sql .= ":curCondition, ";
-        $sql .= ":curComments, ";
-        $sql .= ":curIsPrivate, ";
-        $sql .= ":curImageFront, ";
-        $sql .= ":curImageBack, ";
-        $sql .= ":curRetailValue, ";
-        $sql .= ":curOwnerId, ";
-        $sql .= ":curUserName ";
-        $sql .= ")";
 
         try {
             $stmt = $conn->prepare($sql); //always prepare the statement
-
-            $stmt->bindParam(":curDenomination", $cur_denomination);
-            $stmt->bindParam(":curFaceValue", $cur_faceValue); //bind the variables
-            $stmt->bindParam(":curMint", $cur_mint);
-            $stmt->bindParam(":curYear", $cur_year);
-            $stmt->bindParam(":curCondition", $cur_condition);
-            $stmt->bindParam(":curComments", $cur_comments);
-            $stmt->bindParam(":curIsPrivate", $cur_isPrivate);
-            $stmt->bindParam(":curImageFront", $target_file);
-            $stmt->bindParam(":curImageBack", $target_fileBack);
-            $stmt->bindParam(":curRetailValue", $cur_retailValue);
-            $stmt->bindParam(":curOwnerId", $user_id);
-            $stmt->bindParam(":curUserName", $user_username);
-
+            // $stmt->debugDumpParams(); //view the pdo statement for debugging
             $stmt->execute(); // finally, execute the statement
             // echo "<h1>Your record has been successfully added to the database.</h1>";
         } catch (PDOException $e) {
-
-            echo "<h1>Something went wrong, Please Try Again.</h1>";
-            echo $e;
+            //  echo "<h1>Something went wrong</h1>";
+            //  echo $e;
         }
-
     }
-
 }//if submitted
 ?>
 <!doctype html>
@@ -205,8 +202,8 @@ if (isset($_POST['cur_submit'])) {
     <!-- Charwillbro@gmail.com 12/5/2018-->
     <meta charset="UTF-8">
     <meta name="description"
-          content="This page hosts a form for a user or admin to add new coins to the database, so long as they are logged in.">
-    <meta name="keywords" content="coin, rare coin, private, rare, collection">
+          content="This page allows a user or an admin with the proper credentials to edit the coins in the database">
+    <meta name="keywords" content="contact, email, name, message, subject">
     <meta name="author" content="Charles Broderick">
     <link href="images/favicon.ico" rel="icon" type="image/x-icon"/>
     <link href="coinStylesheet.css" rel="stylesheet" type="text/css"/>
@@ -232,17 +229,11 @@ if (isset($_POST['cur_submit'])) {
         <?php
         if (!isset($_SESSION['validUser'])) {
             echo(" display: none;");
+
         }
         ?>
         }
-
     </style>
-    <script>
-        function showCoinCollection() {
-            location.href = "myCollection.php";
-        }
-
-    </script>
 </head>
 
 <body>
@@ -257,21 +248,22 @@ if (isset($_POST['cur_submit'])) {
             <p>A place to be proud of your coin collection!</p>
         </div>
     </a>
+
     <!-- Navigation Bar -->
     <div class="navbar">
         <a href="index.php">Home</a>
         <a href="login.php">Login</a>
         <a href="viewCoinCollection.php">Gallery</a>
-        <a class="validUser active" href="coinDatabase.php">Add Coins</a>
+        <a class="validUser" href="coinDatabase.php">Add Coins</a>
         <?php
         if (isset($_SESSION['validUser'])) {
             if (($_SESSION['user_role'] == 1)) {
-                echo(" <a class=\"validUser\" href=\"myCollection.php\">Admin</a>");
+                echo(" <a class=\"validUser active\" href=\"myCollection.php\">Admin</a>");
             } else {
-                echo(" <a class=\"validUser\" href=\"myCollection.php\">My Collection</a>");
+                echo(" <a class=\"validUser active\" href=\"myCollection.php\">My Collection</a>");
             }
         } else {
-            echo(" <a class=\"validUser\" href=\"myCollection.php\">My Collection</a>");
+            echo(" <a class=\"validUser active\" href=\"myCollection.php\">My Collection</a>");
         }
         ?>
         <a href="contactUs.php">Contact Us</a>
@@ -286,17 +278,17 @@ if (isset($_POST['cur_submit'])) {
             if ($valid_form) {
                 ?>
 
-                <h2>You have successfully added a coin!</h2>
+                <h2>You have successfully updated the coin!</h2>
                 <?php
             }
-            if (isset($_SESSION['validUser'])) {
 
+            if (isset($_SESSION['validUser'])) {
 
                 if ($_SESSION['validUser'] == true) {
 
-//                        echo("<p> User ID:" . $_SESSION['user_id'] . "</p><br>");
-//                        echo("<p> Username:" . $_SESSION['user_username'] . "</p><br>");
-//                        echo("<p> Role Clearance: " . $_SESSION['user_role'] . "</p><br>");
+                    // echo("<p> User ID:" . $_SESSION['user_id'] . "</p><br>");
+                    // echo("<p> Username:" . $_SESSION['user_username'] . "</p><br>");
+                    // echo("<p> Role Clearance: " . $_SESSION['user_role'] . "</p><br>");
                     ?>
 
                     <article>
@@ -394,15 +386,16 @@ if (isset($_POST['cur_submit'])) {
                                     <p>
                                         <label for="cur_inFile">Coin Front</label>
                                         <input type="file" name="cur_inFile" id="cur_inFile"
-                                               value="<?php echo $cur_inFile; ?>">
+                                               value="<?php// echo $cur_inFile; ?>">
+                                        <?php //echo $cur_inFile; ?>
                                         <span id="errorFile"><?php echo $inFile_errMsg; ?></span>
                                     </p>
                                     <br>
-
+                                    </p>
                                     <p>
                                         <label for="cur_inFileBack">Coin Back</label>
                                         <input type="file" name="cur_inFileBack" id="cur_inFileBack"
-                                               value="<?php echo $cur_inFileBack; ?>">
+                                               value="<?php// echo $cur_inFileBack; ?>">
                                         <span id="errorFile"><?php echo $inFile_errMsg; ?></span>
                                     </p>
 
@@ -443,29 +436,21 @@ if (isset($_POST['cur_submit'])) {
                 <?php
             }
 
+
             ?>
         </div>
 
 
         <div class="side">
             <h2>FAQ</h2>
-
-            <h4 class="validUser">Welcome <?php echo $_SESSION['user_username'] ?>.</h4>
-            <p> This is a dashboard where you can add new coins, edit your current collection, or remove coins.</p>
-            <button class="validUser" id="showCollection" name="showCollection" onclick="showCoinCollection()"
-                    value="Show Collection">
-                Show Collection
-            </button>
-            <br>
-            <button class="validUser" id="updateCollection" name="updateCollection" onclick="updateCoinCollection()"
-                    value="Update Collection">Update Collection
-            </button>
+            <h5>What is a coin?</h5>
+            <!--<div class="sidebarImage"><img src="images/storefront.jpg" alt="Image of store front"-->
+            <!--title="Our store front"></div>-->
+            <p> A coin is a form of currency that normally has a metallic composition.</p>
 
         </div>
     </div>
 
-
-    <p></p>
     <script>
         document.getElementById('kitten').style.display = "none"; //hide this field
         document.getElementById('midName').style.display = "none"; //hide this field

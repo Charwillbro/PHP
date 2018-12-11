@@ -1,0 +1,36 @@
+
+Self Posting Algorithm   Add new record to table 
+
+IF ( the form has been posted or "submitted' ) then
+
+         Process the form data from the server using the $_POST or $_GET
+
+         Validate the form data  (at least sanitize the input fields to prevent SQL injection)
+
+         If valid data
+
+              Create the INSERT SQL query
+
+              Run the INSERT SQL query
+
+              If query is successful 
+
+                  Create confirmation to the user that their data has been successful processed
+
+                  Provide links to home page or ?
+
+             else
+
+                  Create error message to user "Sorry there was a problem adding the record"
+
+                  Provide links to home page or to the Add Form page (try again)
+
+        else (data is invalid)
+
+             Create error messages for invalid fields
+
+             Display form with error messages to the user
+
+ELSE ( the form has NOT been seen by the user)
+
+     Display the form for data entry
