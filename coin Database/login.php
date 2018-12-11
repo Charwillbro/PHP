@@ -250,7 +250,7 @@ if (isset($_POST['cur_submit'])) {
                             </div>
                             <p>
                                 <label for="cur_password">Password </label>
-                                <input type="text" name="cur_password" id="cur_password"
+                                <input type="password" name="cur_password" id="cur_password"
                                        value="<?php echo $cur_password; ?>">
                                 <span id="errorComments"> <?php echo $password_errMsg; ?></span>
                             </p>
